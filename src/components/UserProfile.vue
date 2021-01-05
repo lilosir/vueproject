@@ -4,6 +4,23 @@
       <h1 class="username">@{{ user.username }} - {{ fullName }}</h1>
       <div class="admin_tag" v-if="user.isAdmin">Admin</div>
       <strong>Followers: {{ followers }}</strong>
+
+      <form class="user-profile-create-tweet" @submit.prevent="createNewTweet">
+        <label for="newTweet"><strong>New Tweet</strong></label>
+        <textarea id="newTweet" rows="4" v-model="tweetContent"/>
+
+        <div class="user-profile-create-tweet-type">
+          <label for="newTweet"><strong>Type: </strong></label>
+          <select id="tweetTypes" v-model="tweetType">
+            <option v-for="(tt, i) in tweetTypes" :value="tt.value" :key="i">
+              {{ tt.name }}
+            </option>
+          </select>
+        </div>
+
+        <button>Tweet!</button>
+      </form>
+
     </div>
     <div class="user-profile-tweets">
       <TweetItem
@@ -38,6 +55,12 @@ export default {
           { id: 2, content: "I love it" },
         ],
       },
+      tweetTypes: [
+        { id: 1, value: "draft", name: "Draft" },
+        { id: 2, value: "instant", name: "Instant Tweet" },
+      ],
+      tweetContent: '',
+      tweetType: 'instant'
     };
   },
   watch: {
@@ -59,6 +82,15 @@ export default {
     triggerFavorite(id) {
       console.log(`favoriate tweet ${id}`);
     },
+    createNewTweet() {
+      if (this.tweetContent && this.tweetType !== 'draft') {
+        this.user.tweets.unshift({
+          id: this.user.tweets.length + 1,
+          content: this.tweetContent
+        })
+        this.tweetContent = ''
+      } 
+    }
   },
   mounted() {
     console.log("???");
@@ -98,6 +130,12 @@ export default {
 .user-profile-tweets {
   display: flex;
   flex: 1;
+  flex-direction: column;
+}
+
+.user-profile-create-tweet {
+  padding-top: 20px;
+  display: flex;
   flex-direction: column;
 }
 </style>

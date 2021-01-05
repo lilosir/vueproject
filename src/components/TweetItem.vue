@@ -40,7 +40,7 @@ export default {
 }
 
 .tweet-item:hover {
-  transform: scale(1.1, 1.1);
+  transform: scale(1.05, 1.1);
 }
 
 .tweet-name {
