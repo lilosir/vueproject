@@ -2,25 +2,10 @@
   <div class="user-profile">
     <div class="user-profile-card">
       <h1 class="username">@{{ user.username }} - {{ fullName }}</h1>
+      <h2>{{ userId }}</h2>
       <div class="admin_tag" v-if="user.isAdmin">Admin</div>
       <strong>Followers: {{ followers }}</strong>
-
-      <form class="user-profile-create-tweet" @submit.prevent="createNewTweet">
-        <label for="newTweet"><strong>New Tweet</strong></label>
-        <textarea id="newTweet" rows="4" v-model="tweetContent"/>
-
-        <div class="user-profile-create-tweet-type">
-          <label for="newTweet"><strong>Type: </strong></label>
-          <select id="tweetTypes" v-model="tweetType">
-            <option v-for="(tt, i) in tweetTypes" :value="tt.value" :key="i">
-              {{ tt.name }}
-            </option>
-          </select>
-        </div>
-
-        <button>Tweet!</button>
-      </form>
-
+      <CreateTweetPanel @add-tweet="addTweet" />
     </div>
     <div class="user-profile-tweets">
       <TweetItem
@@ -35,11 +20,20 @@
 </template>
 
 <script>
-import TweetItem from "./TweetItem";
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import TweetItem from "@/components/TweetItem";
+import CreateTweetPanel from "@/components/CreateTweetPanel";
 
 export default {
   name: "UserProfile",
-  components: { TweetItem },
+  components: { TweetItem, CreateTweetPanel },
+  setup() {
+    const route = useRoute()
+    const userId = computed(() => route.params.userId)
+
+    return { userId }
+  },
   data() {
     return {
       followers: 0,
@@ -55,12 +49,6 @@ export default {
           { id: 2, content: "I love it" },
         ],
       },
-      tweetTypes: [
-        { id: 1, value: "draft", name: "Draft" },
-        { id: 2, value: "instant", name: "Instant Tweet" },
-      ],
-      tweetContent: '',
-      tweetType: 'instant'
     };
   },
   watch: {
@@ -82,24 +70,20 @@ export default {
     triggerFavorite(id) {
       console.log(`favoriate tweet ${id}`);
     },
-    createNewTweet() {
-      if (this.tweetContent && this.tweetType !== 'draft') {
-        this.user.tweets.unshift({
-          id: this.user.tweets.length + 1,
-          content: this.tweetContent
-        })
-        this.tweetContent = ''
-      } 
-    }
+    addTweet(content) {
+      this.user.tweets.unshift({
+        id: this.user.tweets.length + 1,
+        content: content,
+      });
+    },
   },
   mounted() {
-    console.log("???");
     this.followUser();
   },
 };
 </script>
 
-<style>
+<style lang='scss' scoped>
 .user-profile {
   display: flex;
 }
@@ -130,12 +114,6 @@ export default {
 .user-profile-tweets {
   display: flex;
   flex: 1;
-  flex-direction: column;
-}
-
-.user-profile-create-tweet {
-  padding-top: 20px;
-  display: flex;
   flex-direction: column;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class='tweet-item' @click="favoriteTweet(tweet.id)">
-    <div class='tweet-name'>@{{ username }}</div>
+  <div class="tweet-item" @click="favoriteTweet(tweet.id)">
+    <div class="tweet-name">@{{ username }}</div>
     <div>{{ tweet.content }}</div>
   </div>
 </template>
@@ -20,13 +20,13 @@ export default {
   },
   methods: {
     favoriteTweet(id) {
-      this.$emit('favorite', id)
-    }
-  }
+      this.$emit("favorite", id);
+    },
+  },
 };
 </script>
 
-<style>
+<style lang='scss' scoped>
 .tweet-item {
   display: flex;
   flex-direction: column;
@@ -37,13 +37,13 @@ export default {
   margin-bottom: 20px;
   cursor: pointer;
   transition: all 0.25s ease;
-}
 
-.tweet-item:hover {
-  transform: scale(1.05, 1.1);
-}
+  .tweet-name {
+    font-weight: bold;
+  }
 
-.tweet-name {
-  font-weight: bold;
+  &:hover {
+    transform: scale(1.05, 1.1);
+  }
 }
 </style>
